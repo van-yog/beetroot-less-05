@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Props validate</title>
+    <link rel="stylesheet" href="../assets//css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/prop-types.js"></script>
+    <script src="../assets/js/babel.js"></script>
+
+    <script type="text/babel">
+      const root = document.getElementById("root");
+
+      function App({ firstName, lastName }) {
+        return (
+          <div className="container">
+            <h1>
+              Hello {firstName} {lastName}
+            </h1>
+          </div>
+        );
+      }
+
+      App.propTypes = {
+        firstName: PropTypes.string,
+        lastName: PropTypes.string.isRequired,
+      };
+      App.defaultProps = {
+        lastName: "Jack",
+      };
+
+      ReactDOM.render(<App firstName={"Ivan"} lastName={"Kharchenko"} />, root);
+    </script>
+  </body>
+</html>

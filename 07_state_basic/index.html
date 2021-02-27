@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>State</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/prop-types.js"></script>
+    <script src="../assets/js/babel.js"></script>
+
+    <script type="text/babel">
+      const root = document.getElementById("root");
+
+      class App extends React.Component {
+        constructor() {
+          super();
+          this.state = { msg: "React" };
+          this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange({ target }) {
+          this.setState({ msg: target.value });
+        }
+        render() {
+          const { msg } = this.state;
+          return (
+            <div className="container">
+              <h1>Hello {msg}!!!</h1>
+              <input value={msg} onChange={this.handleChange} />
+            </div>
+          );
+        }
+      }
+
+      console.log(App.prototype.constructor === App);
+
+      ReactDOM.render(<App />, root);
+    </script>
+  </body>
+</html>

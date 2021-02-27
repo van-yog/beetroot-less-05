@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Counter</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/prop-types.js"></script>
+    <script src="../assets/js/babel.js"></script>
+
+    <script type="text/babel">
+      const root = document.getElementById("root");
+
+      function App(props) {
+        const state = [];
+        const [count, setCount] = useState(0);
+        const [error, setError] = useState(null);
+        console.log(state);
+
+        //#region
+        const increment = () => setCount((x) => x + 1);
+        const decrement = () => setCount(count - 1);
+        const reset = () => setCount(0);
+
+        return (
+          <div className="container  pt-3">
+            <h1 className="mb-3">Counter {count}</h1>
+            <button className="btn btn-primary mr-3" onClick={increment}>
+              Increment
+            </button>
+            <button onClick={decrement} className="btn btn-success  mr-3">
+              Decrement
+            </button>
+            <button onClick={reset} className="btn btn-danger">
+              Reset
+            </button>
+          </div>
+        );
+        //#endregion
+
+        let callCount = -1;
+
+        function useState(initValue) {
+          const id = ++callCount;
+          if (state[id]) {
+            return state[id];
+          }
+
+          const setState = (v) => {
+            const newVal = typeof v === "function" ? v(state[id][0]) : v;
+            state[id][0] = newVal;
+            renderHook();
+          };
+          const tuple = [initValue, setState];
+          state.push(tuple);
+          return tuple;
+        }
+      }
+
+      function renderHook() {
+        ReactDOM.render(<App />, root);
+      }
+      renderHook();
+    </script>
+  </body>
+</html>

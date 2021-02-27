@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Event Handler</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/prop-types.js"></script>
+    <script src="../assets/js/babel.js"></script>
+
+    <script type="text/babel">
+      const rootElement = document.getElementById("root");
+
+      function App(props) {
+        const [type, setType] = React.useState("");
+        const [val, setVal] = React.useState("");
+
+        const update = (e) => {
+          navigator.clipboard.readText().then((text) => {
+            const re = new RegExp(text, "gi");
+            const newVal = val.replace(re, (st) => st.toUpperCase());
+            setVal(newVal);
+          });
+          setType(e.type);
+        };
+        return (
+          <div className="container">
+            <h1>Current Event:{type}</h1>
+            <textarea
+              value={val}
+              onChange={(e) => setVal(e.target.value)}
+              onCopy={update}
+              className="form-control"
+            />
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, rootElement);
+    </script>
+  </body>
+</html>

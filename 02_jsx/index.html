@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSX, props</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="root"></div>
+    </div>
+    <!-- ================ Script =================  -->
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/babel.js"></script>
+    <script type="text/babel">
+      const root = document.getElementById("root");
+
+      const Message1 = ({ children }) => <h1>{children}</h1>;
+
+      function Message({ children }) {
+        return <h1>{children}</h1>;
+      }
+      const cls = "container";
+
+      const Heart = ({ color }) => <span style={{ color }}>&hearts;</span>;
+      const h1 = (
+        <div className={cls}>
+          <Message>
+            Hello <Heart color="green" /> React
+          </Message>
+          <Message>
+            Hello <Heart color="blue" /> Ivan
+          </Message>
+          <Message1 children={"Jack"}></Message1>
+        </div>
+      );
+
+      console.log(Message);
+      console.log(Message1 === Message);
+      ReactDOM.render(h1, root);
+    </script>
+  </body>
+</html>
