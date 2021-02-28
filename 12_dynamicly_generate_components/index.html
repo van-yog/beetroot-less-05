@@ -22,7 +22,7 @@
       const InputComponent = ({ filter, handleFilter }) => {
         return (
           <input
-            value={filter}
+            vlaue={filter}
             onChange={(e) => handleFilter(e.target.value)}
           />
         );
@@ -41,13 +41,13 @@
           try {
             const res = await fetch(URL);
             if (!res.ok) {
-              console.log("Ploho");
+              console.log("Unsuccesfully response");
               this.setState({ error: true });
             }
             const data = await res.json();
             this.setState({ results: data.results });
           } catch (err) {
-            console.log(err);
+            console.log(Err);
           } finally {
             this.setState({ loading: false });
           }
@@ -55,18 +55,19 @@
 
         get body() {
           let { results, filter, loading, error } = this.state;
-          if (loading) return <h1>Loading...</h1>;
-          if (error) return <h1>ooops :( </h1>;
+          if (loading) return <h1>Loading ... </h1>;
+          if (error) return <h1>Ooops :( </h1>;
 
           if (filter) {
-            results = results.filter((item) =>
-              item.name.toLowerCase().inludes(filter.toLowerCase())
+            console.log("START FILTER: ", filter);
+            results = results.filter(({ name }) =>
+              name.toLowerCase().includes(filter.toLowerCase())
             );
           }
 
-          return results.map((item) => (
-            <li className="list-prop" key={item.key}>
-              {item.name}
+          return results.map(({ name }) => (
+            <li key={name} className="list-group-item">
+              {name}
             </li>
           ));
         }
@@ -74,14 +75,15 @@
         handleFilter = (filter) => this.setState({ filter });
 
         render() {
+          const { filter } = this.state;
           return (
             <div className="container">
               <h1>People</h1>
               <InputComponent
-                filter={this.state.filter}
                 handleFilter={this.handleFilter}
+                filter={filter}
               />
-              <ul className="list-group">{this.body}</ul>
+              {this.body}
             </div>
           );
         }

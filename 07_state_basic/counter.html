@@ -18,15 +18,22 @@
       const root = document.getElementById("root");
 
       function App(props) {
-        const state = [];
         const [count, setCount] = useState(0);
         const [error, setError] = useState(null);
         console.log(state);
 
         //#region
-        const increment = () => setCount((x) => x + 1);
-        const decrement = () => setCount(count - 1);
-        const reset = () => setCount(0);
+        const increment = () => {
+          setCount((x) => x + 1);
+          setError(null);
+        };
+        const decrement = () =>
+          count > 0 ? setCount(count - 1) : setError("Cannot be less 0 ");
+
+        const reset = () => {
+          setCount(0);
+          setError(null);
+        };
 
         return (
           <div className="container  pt-3">
@@ -40,32 +47,42 @@
             <button onClick={reset} className="btn btn-danger">
               Reset
             </button>
+            {error && (
+              <marquee direction="right" className="mt-3">
+                <p onClick={() => setError(null)}>{error}</p>
+              </marquee>
+            )}
           </div>
         );
         //#endregion
+      }
 
-        let callCount = -1;
+      let state = [];
+      let callCount = -1;
 
-        function useState(initValue) {
-          const id = ++callCount;
-          if (state[id]) {
-            return state[id];
-          }
-
-          const setState = (v) => {
-            const newVal = typeof v === "function" ? v(state[id][0]) : v;
-            state[id][0] = newVal;
-            renderHook();
-          };
-          const tuple = [initValue, setState];
-          state.push(tuple);
-          return tuple;
+      function useState(initValue) {
+        const id = ++callCount;
+        if (state[id]) {
+          return state[id];
         }
+        console.log("useState -> initValue", initValue);
+
+        const setState = (v) => {
+          const newVal = typeof v === "function" ? v(state[id][0]) : v;
+          state[id][0] = newVal;
+          renderHook();
+        };
+        const tuple = [initValue, setState];
+        state.push(tuple);
+
+        return tuple;
       }
 
       function renderHook() {
+        callCount = -1;
         ReactDOM.render(<App />, root);
       }
+
       renderHook();
     </script>
   </body>

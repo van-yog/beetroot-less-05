@@ -21,12 +21,12 @@
         const [type, setType] = React.useState("");
         const [val, setVal] = React.useState("");
 
-        const update = (e) => {
-          navigator.clipboard.readText().then((text) => {
-            const re = new RegExp(text, "gi");
-            const newVal = val.replace(re, (st) => st.toUpperCase());
-            setVal(newVal);
-          });
+        const update = async (e) => {
+          const text = await navigator.clipboard.readText();
+
+          const newVal = val.replace(text, text.toUpperCase());
+          setVal(newVal);
+
           setType(e.type);
         };
         return (

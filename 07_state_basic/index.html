@@ -17,30 +17,41 @@
     <script type="text/babel">
       const root = document.getElementById("root");
 
+      function InputComponent({ msg, handleChange }) {
+        return <input value={msg} onChange={handleChange} />;
+      }
       class App extends React.Component {
-        constructor() {
-          super();
-          this.state = { msg: "React" };
-          this.handleChange = this.handleChange.bind(this);
-        }
+        state = { msg: "react" };
 
-        handleChange({ target }) {
+        handleChange = ({ target }) => {
           this.setState({ msg: target.value });
-        }
+        };
+
         render() {
           const { msg } = this.state;
+          const { greet } = this.props;
           return (
             <div className="container">
-              <h1>Hello {msg}!!!</h1>
-              <input value={msg} onChange={this.handleChange} />
+              <h1>
+                {greet} {msg}!!!
+              </h1>
+              <InputComponent msg={msg} handleChange={this.handleChange} />
             </div>
           );
         }
       }
 
+      // App.propTypes = {
+      //   greet: PropTypes.string.isReauired,
+      // };
+
+      // App.defaultProps = {
+      //   greet: "Hi",
+      // };
+
       console.log(App.prototype.constructor === App);
 
-      ReactDOM.render(<App />, root);
+      ReactDOM.render(<App greet="jack" />, root);
     </script>
   </body>
 </html>

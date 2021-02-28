@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home work</title>
+    <title>Home work Kharchenko</title>
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
   </head>
   <body>
@@ -16,5 +16,145 @@
 - обязательно валидировать props используя библиотеку prop-types   
 - реализовать фильтрацию по имени пользователя   
 -->
+    <script src="../assets/js/react.development.js"></script>
+    <script src="../assets/js/react-dom.development.js"></script>
+    <script src="../assets/js/prop-types.js"></script>
+    <script src="../assets/js/babel.js"></script>
+    <script type="text/babel">
+      const root = document.getElementById("root");
+      const URL = "https://jsonplaceholder.typicode.com/users";
+
+      class HeaderTextComponent extends React.Component {
+        render() {
+          let { isLoading } = this.props;
+          return (
+            <h1>
+              {isLoading ? "Whaiting response from server" : "Filter name"}
+            </h1>
+          );
+        }
+      }
+
+      class InputComponent extends React.Component {
+        render() {
+          let { filter, handleFilter } = this.props;
+          return (
+            <input
+              className="mb-3"
+              vlaue={filter}
+              onChange={(e) => handleFilter(e.target.value)}
+            />
+          );
+        }
+      }
+
+      class TableResultsComponent extends React.Component {
+        get showResults() {
+          let { results, filter } = this.props;
+
+          if (filter) {
+            results = results.filter(({ name }) =>
+              name.toLowerCase().includes(filter.toLowerCase())
+            );
+          }
+
+          return results.map(({ name, username, email, id }, idx) => (
+            <tr key={id}>
+              <th scope="row">{idx + 1}</th>
+              <td>{name}</td>
+              <td>{username}</td>
+              <td>{email}</td>
+            </tr>
+          ));
+        }
+
+        render() {
+          let results = this.showResults;
+          return (
+            <React.Fragment>
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">email</th>
+                  </tr>
+                </thead>
+                <tbody>{results}</tbody>
+              </table>
+              {!results.length && <h2>No results</h2>}
+            </React.Fragment>
+          );
+        }
+      }
+      class App extends React.Component {
+        state = {
+          results: [],
+          filter: "",
+          error: false,
+          isLoading: false,
+        };
+        async componentDidMount() {
+          try {
+            const responce = await fetch(URL);
+
+            if (!responce.ok) {
+              console.log("response error");
+              this.setState({ error: true });
+              return;
+            }
+            const results = await responce.json();
+            this.setState({ results });
+          } catch (err) {
+            console.log(Err);
+          } finally {
+            this.setState({ isLoading: false });
+          }
+        }
+
+        handleFilter = (filter) => this.setState({ filter });
+
+        render() {
+          const { isLoading, filter, error, results } = this.state;
+          return (
+            <div className="container  bg-light">
+              {error ? (
+                <h2>Some error</h2>
+              ) : (
+                <React.Fragment>
+                  <HeaderTextComponent isLoading={isLoading} />
+                  <InputComponent
+                    handleFilter={this.handleFilter}
+                    filter={filter}
+                  />
+                  <TableResultsComponent results={results} filter={filter} />
+                </React.Fragment>
+              )}
+            </div>
+          );
+        }
+      }
+
+      HeaderTextComponent.propTypes = {
+        isLoading: PropTypes.bool.isRequired,
+      };
+
+      InputComponent.propTypes = {
+        handleFilter: PropTypes.func.isRequired,
+        filter: PropTypes.string.isRequired,
+      };
+
+      TableResultsComponent.propTypes = {
+        results: PropTypes.array,
+        filter: PropTypes.string,
+      };
+      TableResultsComponent.defaultProps = {
+        results: [],
+        filter: "",
+      };
+
+      ReactDOM.render(<App />, root);
+    </script>
   </body>
 </html>
