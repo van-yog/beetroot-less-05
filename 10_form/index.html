@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Control form's elements</title>
-    <link rel="stylesheet"  href="../assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
   </head>
   <body>
     <div id="root"></div>
@@ -13,10 +13,54 @@
     <script src="../assets/js/react.development.js"></script>
     <script src="../assets/js/react-dom.development.js"></script>
     <script src="../assets/js/prop-types.js"></script>
-    <script  src="../assets/js/babel.js"></script>
-    
- <script type="text/babel">
+    <script src="../assets/js/babel.js"></script>
+
+    <script type="text/babel">
       const rootElement = document.getElementById("root");
+
+      const CheckInputs = ({
+        availableOptions,
+        checkInput,
+        handleCheckInputChange,
+      }) => {
+        return (
+          <div className="form-group  col-md-4">
+            {availableOptions.map((item, i) => (
+              <div key={item}>
+                {console.log("render tet", checkInput)}
+                {checkInput.includes(item) ? (
+                  <input
+                    style={{ marginRight: "5px", cursor: "pointer" }}
+                    id={item}
+                    type="checkbox"
+                    onChange={handleCheckInputChange}
+                    checked
+                  />
+                ) : (
+                  <input
+                    style={{ marginRight: "5px", cursor: "pointer" }}
+                    id={item}
+                    type="checkbox"
+                    onChange={handleCheckInputChange}
+                  />
+                )}
+
+                <label style={{ cursor: "pointer" }} htmlFor={item}>
+                  {item}
+                </label>
+              </div>
+            ))}
+          </div>
+        );
+      };
+
+      CheckInputs.propTypes = {
+        checkInput: PropTypes.array.isRequired,
+        availableOptions: PropTypes.array.isRequired,
+      };
+      CheckInputs.defaultProps = {
+        checkInput: [],
+      };
 
       class Form extends React.Component {
         static availableOptions = [
@@ -25,22 +69,86 @@
           "grape",
           "cherry",
           "peach",
-          "pear"
+          "pear",
         ];
 
-        handleCommaSeperatedChange = e => {
-          console.log("Handle comma separated");
+        state = {
+          multiLine: "",
+          commaSeparated: "",
+          multiSelect: [],
+          checkInput: [],
         };
 
-        handleMultipleChange = e => {
-          console.log("Handle multiline");
+        handleCommaSeperatedChange = (e) => {
+          const { value } = e.target;
+          const allVals = value
+            .split(",")
+            .map((v) => v.trim())
+            .filter((v) => v && Form.availableOptions.includes(v));
+          this.setState({
+            commaSeparated: value,
+            multiLine: allVals.join("\n"),
+            multiSelect: allVals,
+            checkInput: allVals,
+          });
         };
 
-        handleMultiSelectChange = e => {
-          console.log("Handle multiselect");
+        handleMultipleChange = (e) => {
+          const { value } = e.target;
+          const allVals = value
+            .split("\n")
+            .map((v) => v.trim())
+            .filter((v) => v && Form.availableOptions.includes(v));
+          this.setState({
+            commaSeparated: allVals.join(", "),
+            multiLine: value,
+            multiSelect: allVals,
+            checkInput: allVals,
+          });
+        };
+
+        handleMultiSelectChange = (e) => {
+          const allVals = [...e.target.selectedOptions].map((o) => o.value);
+
+          this.setState({
+            commaSeparated: allVals.join(", "),
+            multiLine: allVals.join("\n"),
+            multiSelect: allVals,
+            checkInput: allVals,
+          });
+        };
+
+        handleCheckInputChange = ({ target }) => {
+          if (target.checked) {
+            const allVals = [...this.state.checkInput, target.id];
+
+            this.setState({
+              commaSeparated: allVals.join(", "),
+              multiLine: allVals.join("\n"),
+              multiSelect: allVals,
+              checkInput: allVals,
+            });
+          } else {
+            const allVals = [...this.state.checkInput];
+            const delIdx = allVals.indexOf(target.id);
+            allVals.splice(delIdx, 1);
+
+            this.setState({
+              commaSeparated: allVals.join(", "),
+              multiLine: allVals.join("\n"),
+              multiSelect: allVals,
+              checkInput: allVals,
+            });
+          }
         };
 
         render() {
+          const {
+            commaSeparated,
+            multiLine,
+            multiSelect,
+            checkInput,
+          } = this.state;
           return (
             <div className="container">
               <form onSubmit={this.handleSubmit}>
@@ -50,6 +158,7 @@
                     <input
                       type="text"
                       className="form-control"
+                      value={commaSeparated}
                       onChange={this.handleCommaSeperatedChange}
                     />
                   </div>
@@ -59,6 +168,7 @@
                     <textarea
                       rows={Form.availableOptions.length}
                       onChange={this.handleMultipleChange}
+                      value={multiLine}
                       className="form-control"
                     />
                   </div>
@@ -67,16 +177,25 @@
                     <label className="label-control">Multi select change</label>
                     <select
                       className="custom-select"
+                      value={multiSelect}
                       multiple
                       size={Form.availableOptions.length}
                       onChange={this.handleMultiSelectChange}
                     >
-                      {Form.availableOptions.map(item => (
+                      {Form.availableOptions.map((item) => (
                         <option key={item} value={item}>
                           {item}
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  <div className="form-group col-md-4">
+                    <CheckInputs
+                      handleCheckInputChange={this.handleCheckInputChange}
+                      availableOptions={Form.availableOptions}
+                      checkInput={checkInput}
+                    />
                   </div>
                 </div>
               </form>

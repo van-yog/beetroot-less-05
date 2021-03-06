@@ -28,8 +28,8 @@
         render() {
           let { isLoading } = this.props;
           return (
-            <h1>
-              {isLoading ? "Whaiting response from server" : "Filter name"}
+            <h1 className="text-center">
+              {isLoading ? "Whaiting response from server" : "Filter username"}
             </h1>
           );
         }
@@ -40,7 +40,7 @@
           let { filter, handleFilter } = this.props;
           return (
             <input
-              className="mb-3"
+              className="d-block mx-auto mb-3"
               vlaue={filter}
               onChange={(e) => handleFilter(e.target.value)}
             />
@@ -53,8 +53,8 @@
           let { results, filter } = this.props;
 
           if (filter) {
-            results = results.filter(({ name }) =>
-              name.toLowerCase().includes(filter.toLowerCase())
+            results = results.filter(({ username }) =>
+              username.toLowerCase().includes(filter.toLowerCase())
             );
           }
 
